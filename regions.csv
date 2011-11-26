@@ -1,0 +1,112 @@
+Regions,ODD,EVEN,Pts
+2,Plains,SouthWest,1
+3,SouthEast,SouthCentral,2
+4,SouthEast,SouthCentral,3
+5,SouthEast,SouthCentral,4
+6,NorthCentral,SouthWest,5
+7,NorthCentral,SouthWest,6
+8,NorthEast,Plains,5
+9,NorthEast,NorthWest,4
+10,NorthEast,NorthWest,3
+11,NorthEast,Plains,2
+12,NorthEast,NorthWest,1
+,,,
+,,,
+NorthEast,ODD,EVEN,Pts
+2,New York,New York,1
+3,New York,Washington,2
+4,New York,Pittsburgh,3
+5,Albany,Pittsburgh,4
+6,Boston,Philadelphia,5
+7,Buffalo,Washington,6
+8,Boston,Philadelphia,5
+9,"Portland, ME",Baltimore,4
+10,New York,Baltimore,3
+11,New York,Baltimore,2
+12,New York,New York,1
+,,,
+,,,
+SouthEast,ODD,EVEN,Pts
+2,Charlotte,Norfolk,1
+3,Charlotte,Norfolk,2
+4,Chattanooga,Norfolk,3
+5,Atlanta,Charleston,4
+6,Atlanta,Miami,5
+7,Atlanta,Jacksonville,6
+8,Richmond,Miami,5
+9,Knoxville,Tampa,4
+10,Mobile,Tampa,3
+11,Knoxville,Mobile,2
+12,Mobile,Norfolk,1
+,,,
+,,,
+,,,
+NorthCentral,ODD,EVEN,Pts
+2,Cleveland,Cincinnati,1
+3,Cleveland,Chicago,2
+4,Cleveland,Cincinnati,3
+5,Cleveland,Cincinnati,4
+6,Detroit,Columbus,5
+7,Detroit,Chicago,6
+8,Indianapolis,Chicago,5
+9,Milwaukee,St Louis,4
+10,Milwaukee,St Louis,3
+11,Chicago,St Louis,2
+12,Milwaukee,Chicago,1
+,,,
+,,,
+SouthCentral,ODD,EVEN,Pts
+2,Memphis,Shreveport,1
+3,Memphis,Shreveport,2
+4,Memphis,Dallas,3
+5,Little Rock,New Orleans,4
+6,New Orleans,Dallas,5
+7,Birmingham,San Antonio,6
+8,Louisville,Houston,5
+9,Nashville,Houston,4
+10,Nashville,Ft Worth,3
+11,Louisville,Ft Worth,2
+12,Memphis,Ft Worth,1
+,,,
+,,,
+,,,
+Plains,ODD,EVEN,Pts
+2,Kansas City,Oklahoma City,1
+3,Kansas City,St Paul,2
+4,Denver,Minneapolis,3
+5,Denver,St Paul,4
+6,Denver,Minneapolis,5
+7,Kansas City,Oklahoma City,6
+8,Kansas City,Des Moines,5
+9,Kansas City,Omaha,4
+10,Pueblo,Omaha,3
+11,Pueblo,Fargo,2
+12,Oklahoma City,Fargo,1
+,,,
+,,,
+NorthWest,ODD,EVEN,Pts
+2,Spokane,Spokane,1
+3,Spokane,Salt Lake City,2
+4,Seattle,Salt Lake City,3
+5,Seattle,Salt Lake City,4
+6,Seattle,"Portland, OR",5
+7,Seattle,"Portland, OR",6
+8,Rapid City,"Portland, OR",5
+9,Casper,Pocatello,4
+10,Billings,Butte,3
+11,Billings,Butte,2
+12,Spokane,"Portland, OR",1
+,,,
+,,,
+SouthWest,ODD,EVEN,Pts
+2,San Diego,Los Angeles,1
+3,San Diego,Oakland,2
+4,Reno,Oakland,3
+5,San Diego,Oakland,4
+6,Sacramento,Los Angeles,5
+7,Las Vegas,Los Angeles,6
+8,Phoenix,Los Angeles,5
+9,El Paso,San Francisco,4
+10,Tucumcari,San Francisco,3
+11,Phoenix,San Francisco,2
+12,Phoenix,San Francisco,1
