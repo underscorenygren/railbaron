@@ -20,7 +20,7 @@
     $(document).ready(function() { 
 		var regions, payoffs;
 		$.get('data/regions.json', function(data) { 
-			regions = JSON.parse(data);
+			regions = data;
 			var $region_sel = $('#region'); 
 			regions = sortObject(regions); 
 			for (key in regions) { 
@@ -28,7 +28,7 @@
 			} 	
 		}); 
 		$.get('data/payoffs.json', function(data) { 
-			payoffs = JSON.parse(data);
+			payoffs = data;
 			payoffs = sortObject(payoffs); 
 			var $from = $('#from'); 
 			var $to = $('#to'); 
