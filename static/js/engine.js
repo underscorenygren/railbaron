@@ -1,19 +1,28 @@
 (function() { 
-    var $win = $(window),
-        $doc = $(document), 
-        adjust_viewport = function() { 
+
+var $win = $(window),
+    $doc = $(document), 
+    adjust_viewport = function() { 
         var h = $win.height(), 
             w = $win.width(), 
             $bg = $('#bg'); 
 
-        $bg.height(h);
+        //$bg.height(h); 
+        $bg.width(w); 
         
-    }; 
+    },
+    show_payoff = function() { 
 
-    $doc.ready(function() {
-        $win.resize(adjust_viewport); 
-        adjust_viewport(); 
-    }); 
+    },
+    show_new_dest = function() { 
+
+    };
+
+
+$doc.ready(function() {
+    $win.resize(adjust_viewport); 
+    adjust_viewport(); 
+}); 
 
 
 })(); 
