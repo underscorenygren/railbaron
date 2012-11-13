@@ -2,6 +2,20 @@
 
 var $win = $(window),
     $doc = $(document), 
+    payoffs = null,
+    regions = null,
+    own_prop = function(elem, val) { 
+        return elem.hasOwnProperty(val); 
+    },
+    dict_to_keys = function(dict) { 
+        var key, val, arr = []; 
+        for (key in dict) { 
+            if (own_prop(dict, key)) { 
+               arr.push(key); 
+            }
+        }
+        return arr;
+    },
     adjust_viewport = function() { 
         var h = $win.height(), 
             w = $win.width(), 
@@ -16,12 +30,43 @@ var $win = $(window),
     },
     show_new_dest = function() { 
 
+    }, 
+    update_payoff = function() { 
+        var from = $('#payoff-from').val(),
+            to = $('#payoff-to').val(), 
+            pay;
+
+        
+        try {  
+            pay = payoffs[to][from];
+        } catch(err) {
+            pay = 0;
+        }
+        pay = (pay) ? parseFloat(pay) : 0; 
+        pay = '$' + (pay * 1000); 
+        $('#payday').text(pay); 	
+    },
+    init_payoff = function() { 
+        var $from = $('#payoff-from'),
+            $to = $('#payoff-to');
+
+		$.get('data/payoffs.json', function(data) { 
+            var names;
+			payoffs = data;
+			payoffs = sortObject(payoffs); 
+            names = dict_to_keys(payoffs);
+            $to.kendoAutoComplete(names);
+            $from.kendoAutoComplete(names); 
+		});
+        $from.change(update_payoff); 
+        $to.change(update_payoff); 
     };
 
 
 $doc.ready(function() {
     $win.resize(adjust_viewport); 
     adjust_viewport(); 
+    init_payoff(); 
 }); 
 
 
@@ -55,18 +100,6 @@ $doc.ready(function() {
 				$region_sel.append($('<option>' + key + '</option>')); 
 			} 	
 		}); 
-		$.get('data/payoffs.json', function(data) { 
-			payoffs = data;
-			payoffs = sortObject(payoffs); 
-			var $from = $('#from'); 
-			var $to = $('#to'); 
-			
-			for (key in payoffs) { 
-				var $opt = $('<option>' + key + '</option>'); 
-				$from.append($opt.clone()); 
-				$to.append($opt); 
-			}
-		}); 
         $('#query').click(function(e) { 
 			var dice  = $('#dice').val(); 
 			var evenodd = $('#evenodd').find('option:selected').val();
@@ -79,15 +112,5 @@ $doc.ready(function() {
 			$('#output').text(regions[region][dice]); 
 				
         }); 
-
-		$('#payoff').click(function(e) { 
-			var from = $('#from').val(); 
-			var to = $('#to').val(); 
-			
-			var pay = payoffs[to][from];
-			pay = parseFloat(pay); 
-			pay = '$' + (pay * 1000); 
-			$('#payday').text(pay); 	
-		}); 
 
     }); 
