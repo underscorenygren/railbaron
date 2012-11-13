@@ -87,6 +87,7 @@ var $win = $(window),
             }
         });
         register_key('p', function() { 
+            $payoff.center();
             $payoff.open(); 
         }); 
     },
