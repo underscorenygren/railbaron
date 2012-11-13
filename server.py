@@ -71,7 +71,7 @@ application = tornado.web.Application([
     (r"/js/(.*)", tornado.web.StaticFileHandler, {"path" : os.path.join(settings['static_path'], 'js')}),
     (r"/img/(.*)", tornado.web.StaticFileHandler, {"path" : os.path.join(settings['static_path'], 'img')}),
     (r"/data/(.*)", tornado.web.StaticFileHandler, {"path" : os.path.join(settings['static_path'], 'data')}),
-    (r"/favicon.ico", tornado.web.StaticFileHandler, {"path" : settings['static_path']}),
+    (r"/favicon.ico", tornado.web.StaticFileHandler, {"path" : os.path.join(settings['static_path'], 'img')}),
     (r"/([\w\s.]*)", MainHandler), 
 ], **settings)
 
@@ -86,6 +86,5 @@ if __name__ == "__main__":
     application.listen(port)
     
     print "Starting App"
-    print settings['static_path']
     tornado.ioloop.IOLoop.instance().start()
 

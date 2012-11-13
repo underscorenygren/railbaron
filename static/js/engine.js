@@ -1,3 +1,22 @@
+(function() { 
+    var $win = $(window),
+        $doc = $(document), 
+        adjust_viewport = function() { 
+        var h = $win.height(), 
+            w = $win.width(), 
+            $bg = $('#bg'); 
+
+        $bg.height(h);
+        
+    }; 
+
+    $doc.ready(function() {
+        $win.resize(adjust_viewport); 
+        adjust_viewport(); 
+    }); 
+
+
+})(); 
 
 	function sortObject(o) {
 		var sorted = {},
@@ -61,4 +80,5 @@
 			pay = '$' + (pay * 1000); 
 			$('#payday').text(pay); 	
 		}); 
+
     }); 
