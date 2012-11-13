@@ -25,20 +25,21 @@
         <input id="query" type="button" value='GO' />
         <span id="output"></span>
     </div>
-    <div class='k-menu'>
-        <h2 class='k-header'>Payoff</h2>
-        <div class='k-group'>
-            <span class='k-content'>From: </span>
-            <input id='payoff-from' class='k-input'></input>
-        </div>
-        <div class='k-group'>
-            <label for='payoff-to'>To:</span>
-            <input id='payoff-to' class='k-input'></input>
-        </div>
-        <div class='k-group'>
-            <span>Payoff:</span>
-            <span id="payday"></span>
-        </div>
+    <div class='k-menu' id='payoff' title='Payoff'>
+        <table>
+            <tr class='menu-row'>
+                <td><label for='payoff-from'>From: </label></td>
+                <td><input id='payoff-from' class='k-input'></input></td>
+            </tr>
+            <tr class='menu-row'>
+                <td><label for='payoff-to'>To: </label></td>
+                <td><input id='payoff-to' class='k-input'></input></td>
+            </tr>
+            <tr class='menu-row'>
+                <td><label>Payoff: </label></td>
+                <td><span id="payday"></span></td>
+            </tr>
+        </table>
     </div>
     <img id='bg' src='/img/railbaron_board.jpg' />
 </div>

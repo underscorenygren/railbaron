@@ -2,6 +2,7 @@
 
 var $win = $(window),
     $doc = $(document), 
+    $payoff = null,
     payoffs = null,
     regions = null,
     own_prop = function(elem, val) { 
@@ -25,9 +26,6 @@ var $win = $(window),
         $bg.width(w); 
         
     },
-    show_payoff = function() { 
-
-    },
     show_new_dest = function() { 
 
     }, 
@@ -50,6 +48,15 @@ var $win = $(window),
         var $from = $('#payoff-from'),
             $to = $('#payoff-to');
 
+        $payoff = $('#payoff');
+        $payoff.kendoWindow(
+            {
+                "width" : '600px', 
+                "title" : 'Payoff',
+            }
+        );
+        $payoff = $payoff.data('kendoWindow');
+
 		$.get('data/payoffs.json', function(data) { 
             var names;
 			payoffs = data;
@@ -60,13 +67,37 @@ var $win = $(window),
 		});
         $from.change(update_payoff); 
         $to.change(update_payoff); 
-    };
+    }, 
+    key_handlers = {},
+    register_key = function(character, handler_fn) { 
+        key_handlers[character[0].toUpperCase().charCodeAt(0)] = handler_fn;
+        key_handlers[character[0].toLowerCase().charCodeAt(0)] = handler_fn; 
+    },
+    init_keystrokes = function() { 
+        $(window).keyup(function(evt) { 
+            var handler = null; 
+            if (evt.altKey) { 
+                handler = key_handlers[evt.which]; 
+                if (handler) { 
+                    handler(evt); 
+                }
+            }
+            else if (evt.which === 27) { //Esc
+                $payoff.close();
+            }
+        });
+        register_key('p', function() { 
+            $payoff.open(); 
+        }); 
+    },
+    noop = function() {};
 
 
 $doc.ready(function() {
     $win.resize(adjust_viewport); 
     adjust_viewport(); 
     init_payoff(); 
+    init_keystrokes();
 }); 
 
 

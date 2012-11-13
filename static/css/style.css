@@ -4,3 +4,15 @@
     left: 0px;
     z-index: -1000;
 }
+
+body { 
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 30px;
+}
+
+.menu-row td { 
+    padding-bottom: 22px;
+}
+.menu-row label {
+    padding-right: 22px;
+}
