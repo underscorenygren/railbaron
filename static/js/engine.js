@@ -45,18 +45,29 @@ var $win = $(window),
         pay = '$' + (pay * 1000); 
         $('#payday').text(pay); 	
     },
+    adjust_close_button = function($kendo_win) { 
+        var $ref = $kendo_win.parent().find('.k-window-actions'); 
+        $ref.find('a')
+            .removeClass('k-window-action k-link')
+            .addClass('k-button')
+            .click(close_windows)
+            .css({'font-size' : '24px'})
+                .find('span')
+                .removeClass('k-icon k-i-close')
+    },
     init_payoff = function() { 
         var $from = $('#payoff-from'),
-            $to = $('#payoff-to');
+            $to = $('#payoff-to'), 
+            $payoff_orig = $('#payoff');
 
-        $payoff = $('#payoff');
-        $payoff.kendoWindow(
+        $payoff_orig.kendoWindow(
             {
                 "width" : '600px', 
                 "title" : 'Payoff',
             }
         );
-        $payoff = $payoff.data('kendoWindow');
+        $payoff = $payoff_orig.data('kendoWindow');
+        adjust_close_button($payoff_orig); 
 
 		$.get('data/payoffs.json', function(data) { 
             var names;
@@ -111,6 +122,7 @@ var $win = $(window),
                 "title" : "New Destination"
             }
         ); 
+        adjust_close_button($destination); 
 
 		$.get('data/regions.json', function(data) { 
 			regions = data;
@@ -133,20 +145,23 @@ var $win = $(window),
             one, two,
             set_region, set_city, parse_roll;  
 
-        parse_roll = function($panel, dice_val_fn) { 
+        parse_roll = function($panel, region, dice_val_fn) { 
             var is_odd = $panel.find("ul.odd-even > li.k-selected"),
-                dice_val = $panel.find("ul.dice > li.k-selected");
+                dice_val = $panel.find("ul.dice > li.k-selected"), 
+                result; 
             if (!is_odd || !dice_val) { return null; }
             is_odd = (is_odd.attr('data-value') === 'Odd');
             dice_val = dice_val.attr('data-value');
-            dice_val_fn(dice_val, is_odd);
+            dice_val = parseInt(dice_val); 
+            if (is_odd) { dice_val = -dice_val; }
+            if (!region || !dice_val) { return ''; }
+            result = regions[region][dice_val]; 
+            dice_val_fn(result); 
         };
 
         set_region = function() { 
             setTimeout(function() { 
-                parse_roll($('#regions'), function(dice_val, is_odd) { 
-                    var region_val = dice_to_region(dice_val, is_odd); 
-                    console.log('region val', region_val, dice_val, is_odd); 
+                parse_roll($('#regions'), 'Regions', function(region_val) { 
                     $region_ul.find('li').each(function() { 
                         var $elem = $(this); 
                         if ($elem.text() === region_val) { 
@@ -161,9 +176,8 @@ var $win = $(window),
 
         set_city = function() { 
             setTimeout(function() { 
-                var dice_val = $city_div.find('.dice > li.k-selected').attr('data-value'),
-                    city_val = dice_to_city(dice_val, $region_ul.find('li.k-selected').attr('data-value')), 
-                    greeting = (city_val) ? 'You\'re going to ' : ""; 
+                parse_roll($('#city_div'), $region_ul.find('li.k-selected').attr('data-value'), function(city_val) { 
+                var greeting = (city_val) ? 'You\'re going to ' : ""; 
 
                 $('#city_greeting').html("You're going to&nbsp;"); 
                 $('#city').text(city_val); 
@@ -174,15 +188,15 @@ var $win = $(window),
             region_city = (!one) ? 'Region' : 'City'; 
             $dice_ul = $('<ul class="dice"></ul>'); 
             $container.append($('<h2></h2>').text(region_city));
-            if (region_city === 'Region') { 
-                $odd_even_ul = $('<ul class="odd-even"></ul>');
-                for (two = 0; two < 2; two++) {
-                    odd_even = (!two) ? 'Odd' : 'Even';
-                    $odd_even_ul.append($(kendo.render(li_template, [{"value" : odd_even}]))); 
-                }
-                $region_div.append($odd_even_ul); 
-                $odd_even_ul.find('li').bind('click', set_region);
+
+            $odd_even_ul = $('<ul class="odd-even"></ul>');
+            for (two = 0; two < 2; two++) {
+                odd_even = (!two) ? 'Odd' : 'Even';
+                $odd_even_ul.append($(kendo.render(li_template, [{"value" : odd_even}]))); 
             }
+            $odd_even_ul.appendTo((region_city === 'Region') ? $region_div : $city_div); 
+            $odd_even_ul.find('li').bind('click', (region_city === 'Region') ? set_region : set_city);
+
             for (i = 2; i < 13; i++) { 
                 $dice_ul.append($(kendo.render(li_template, [{'value' : i}]))); 
             }
@@ -199,7 +213,7 @@ var $win = $(window),
                 $dice_ul.find('li').bind('click', set_region); 
             } else {
                 $city_div.append($dice_ul); 
-                $city_div.append($("<span id='city_greeting'></span><span id='city'></span>"));
+                $city_div.append($("<h3><span id='city_greeting'></span><span id='city'></span></h3>"));
                 $container.append($city_div);
                 $dice_ul.find('li').bind('click', set_city); 
             }
@@ -211,6 +225,19 @@ var $win = $(window),
         key_handlers[character[0].toUpperCase().charCodeAt(0)] = handler_fn;
         key_handlers[character[0].toLowerCase().charCodeAt(0)] = handler_fn; 
     },
+    open_payoffs = function() { 
+        $payoff.center();
+        $payoff.open(); 
+    }, 
+    open_destination = function() {
+        var $dest_win = $destination.data('kendoWindow'); 
+        $dest_win.center(); 
+        $dest_win.open();
+    },
+    close_windows = function() { 
+        $payoff.close();
+        $destination.data('kendoWindow').close(); 
+    }, 
     init_keystrokes = function() { 
         $(window).keyup(function(evt) { 
             var handler = null; 
@@ -221,17 +248,14 @@ var $win = $(window),
                 }
             }
             else if (evt.which === 27) { //Esc
-                $payoff.close();
+                close_windows(); 
             }
         });
         register_key('p', function() { 
-            $payoff.center();
-            $payoff.open(); 
+            open_payoffs();
         }); 
         register_key('n', function() { 
-            var $dest_win = $destination.data('kendoWindow'); 
-            $dest_win.center(); 
-            $dest_win.open();
+            open_destination(); 
         }); 
     },
     sortObject = function(o) {
@@ -260,6 +284,8 @@ $doc.ready(function() {
     init_payoff(); 
     init_keystrokes();
     init_destination(); 
+    $('#destination_button').click(open_destination); 
+    $('#payoff_button').click(open_payoffs); 
 }); 
 
 })(); 
