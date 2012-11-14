@@ -97,7 +97,7 @@ var $win = $(window),
 
             return null; 
         }
-    }, 
+    })(), 
     dice_to_city = function(dice_val, region) { 
         if (!region || !dice_val) { return ''; }
         return regions[region][dice_val]; 
@@ -114,6 +114,7 @@ var $win = $(window),
 		$.get('data/regions.json', function(data) { 
 			regions = data;
 			regions = sortObject(regions); 
+            make_dest_selector($destination); 
 		}); 
     },
     make_dest_selector = function($container) { 
@@ -121,11 +122,11 @@ var $win = $(window),
             $region_ul = $('<ul></ul>'),
             $city_div = $('<div></div>'),
             i, il, odd_even, $odd_even_ul, $dice_ul, key, region_city, 
-            set_region, set_city; 
+            set_region, set_city, parse_roll;  
 
         parse_roll = function($panel, dice_val_fn) { 
             var is_odd = $panel.find("ul.odd-even > li:selected"), 
-                dice_val = $panel.find("ul.dice > li:selected"), 
+                dice_val = $panel.find("ul.dice > li:selected");
             if (!is_odd || !dice_val) { return; }
             is_odd = (is_odd.val() === 'Odd'); 
             dice_val = dice_val.val(); 
@@ -144,8 +145,9 @@ var $win = $(window),
                         $elem.removeAttr("selected"); 
                     }
                 }); 
-            );
-        }; 
+            }); 
+        }
+
         set_city = function() { 
             var dice_val = $city_div.find('.dice > li:selected'),
                 city_val = dice_to_city(dice_val, $region_ul.find('li:selected').val()), 
@@ -156,7 +158,7 @@ var $win = $(window),
         };
 
         $city_div.append($("<span id='city-greeting'></span><span id='city'></span>"));
-        for (region_city = 'Region', region_city === 'Region'; region_city = 'City') { 
+        for (region_city = 'Region'; region_city === 'Region'; region_city = 'City') { 
             $odd_even_ul = $('<ul></ul>');
             $dice_ul = $('<ul></ul>'); 
             for (odd_even = 'Odd'; odd_even === 'Odd'; odd_even = 'Even') { 
@@ -171,7 +173,7 @@ var $win = $(window),
 
             if (region_city === 'Region') { 
                 for (key in regions) { 
-                    if (own_prop(regions, key) {    
+                    if (own_prop(regions, key)) {    
                         $region_ul.append(kendo.render(li_template, {"value" : key})); 
                     }
                 }
@@ -207,20 +209,7 @@ var $win = $(window),
             $payoff.open(); 
         }); 
     },
-    noop = function() {};
-
-
-$doc.ready(function() {
-    $win.resize(adjust_viewport); 
-    adjust_viewport(); 
-    init_payoff(); 
-    init_keystrokes();
-}); 
-
-
-})(); 
-
-	function sortObject(o) {
+    sortObject = function(o) {
 		var sorted = {},
 		key, a = [];
 
@@ -236,21 +225,15 @@ $doc.ready(function() {
 			sorted[a[key]] = o[a[key]];
 		}
 		return sorted;
-	}
+	},
+    noop = function() {};
 
-    $(document).ready(function() { 
-		var regions, payoffs;
-        $('#query').click(function(e) { 
-			var dice  = $('#dice').val(); 
-			var evenodd = $('#evenodd').find('option:selected').val();
-			var region = $('#region').find('option:selected').text(); 
 
-			if (evenodd === "odd") { 
-				dice = '-' + dice;
-			}
+$doc.ready(function() {
+    $win.resize(adjust_viewport); 
+    adjust_viewport(); 
+    init_payoff(); 
+    init_keystrokes();
+}); 
 
-			$('#output').text(regions[region][dice]); 
-				
-        }); 
-
-    }); 
+})(); 
