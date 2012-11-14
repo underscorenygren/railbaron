@@ -118,21 +118,28 @@ var $win = $(window),
             make_dest_selector($destination); 
 		}); 
     },
+    radio_selector = function(evt) { 
+        var $clicked = $(evt.target),
+            $paren = $clicked.closest('ul');
+        $paren.find('li').removeClass('k-selected').removeAttr('selected'); 
+        $clicked.closest('li').addClass('k-selected').attr('selected', 'selected'); 
+    },
     make_dest_selector = function($container) { 
-        var li_template = kendo.template('<li data-value=#value#><span>#value</span></li>'),
+        var li_template = kendo.template('<li class="k-button" data-value="#=value#"><span>#=value#</span></li>'),
             $region_ul = $('<ul></ul>'),
             $city_div = $('<div></div>'),
             i, il, odd_even, $odd_even_ul, $dice_ul, key, region_city, 
+            one, two,
             set_region, set_city, parse_roll;  
 
         parse_roll = function($panel, dice_val_fn) { 
-            var is_odd = $panel.find("ul.odd-even > li:selected"), 
+            var is_odd = $panel.find("ul.odd-even > li:selected"),
                 dice_val = $panel.find("ul.dice > li:selected");
             if (!is_odd || !dice_val) { return; }
-            is_odd = (is_odd.val() === 'Odd'); 
-            dice_val = dice_val.val(); 
-            dice_val_fn(dice_val, is_odd); 
-        }; 
+            is_odd = (is_odd.val() === 'Odd');
+            dice_val = dice_val.val();
+            dice_val_fn(dice_val, is_odd);
+        };
 
         set_region = function() { 
             parse_roll($('#regions'), function(dice_val, is_odd) { 
@@ -147,7 +154,7 @@ var $win = $(window),
                     }
                 }); 
             }); 
-        }
+        };
 
         set_city = function() { 
             var dice_val = $city_div.find('.dice > li:selected'),
@@ -159,33 +166,37 @@ var $win = $(window),
         };
 
         $city_div.append($("<span id='city-greeting'></span><span id='city'></span>"));
-        for (region_city = 'Region'; region_city === 'Region'; region_city = 'City') { 
-            $odd_even_ul = $('<ul></ul>');
+        for (one = 0; one < 2; one++) { 
+            region_city = (!one) ? 'Region' : 'City'; 
             $dice_ul = $('<ul></ul>'); 
-            for (odd_even = 'Odd'; odd_even === 'Odd'; odd_even = 'Even') { 
-                $odd_even_ul.append($(kendo.render(li_template, {"value" : odd_even}))); 
-                for (i = 2; i < 13; i++) { 
-                    $dice_ul.append($(kendo.render(li_template, {'value' : i}))); 
+            $container.append($('<h2></h2>').text(region_city));
+            if (region_city === 'Region') { 
+                $odd_even_ul = $('<ul></ul>');
+                for (two = 0; two < 2; two++) {
+                    odd_even = (!two) ? 'Odd' : 'Even';
+                    $odd_even_ul.append($(kendo.render(li_template, [{"value" : odd_even}]))); 
                 }
+                $container.append($odd_even_ul); 
+                $odd_even_ul.change(set_region);
             }
-            $container.append($('h2').text(region_city));
-            $container.append($odd_even_ul); 
+            for (i = 2; i < 13; i++) { 
+                $dice_ul.append($(kendo.render(li_template, [{'value' : i}]))); 
+            }
             $container.append($dice_ul); 
 
             if (region_city === 'Region') { 
                 for (key in regions) { 
                     if (own_prop(regions, key)) {    
-                        $region_ul.append(kendo.render(li_template, {"value" : key})); 
+                        $region_ul.append(kendo.render(li_template, [{"value" : key}])); 
                     }
                 }
-                $odd_even_ul.change(set_region); 
                 $dice_ul.change(set_region); 
             } else {
                 $container.append($city_div);
-                $odd_even_ul.change(set_city); 
                 $dice_ul.change(set_city); 
             }
        }
+       $container.find('li').bind('click', radio_selector); 
     },
     key_handlers = {},
     register_key = function(character, handler_fn) { 

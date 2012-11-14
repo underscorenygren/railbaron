@@ -16,3 +16,27 @@ body {
 .menu-row label {
     padding-right: 22px;
 }
+
+#destination ul {
+    list-style: none;
+    background: #eee;
+    border: 1px solid #dadada;
+    border-radius: 5px;
+    text-align: center; 
+    margin: 10px auto;
+}
+
+#destination span { 
+    display: inline-block;
+    vertical-align: center;
+}
+
+#destination li { 
+    display: inline;
+    margin: auto 5px;
+}
+
+#destination li.k-selected { 
+    background-color: #f0713a;
+    color:white;
+}; 
