@@ -68,6 +68,54 @@ var $win = $(window),
         $from.change(update_payoff); 
         $to.change(update_payoff); 
     }, 
+    dice_to_region = (function() { 
+        var _regions = {
+            "plains" : [-2, 8, 11],
+            "southeast" : [-3, -4, -5],
+            "northcentral" : [-6,-7], 
+            "northeast" : [-8,  -9, -10, -11, -12],
+            "southwest" : [2, 6, 7],
+            "southcentral" : [3, 4, 5],
+            "northwest" : [9, 10, 12]
+        }; 
+
+        return function(dice_val, is_odd) { 
+            var key; 
+            dice_val = parseInt(dice_val); 
+            if (is_odd) { dice_val = -dice_val; } 
+
+            for (key in _regions) { 
+                if (own_prop(_regions, key)) { 
+                    arr = _regions[key]; 
+                    for (i = 0, il = arr.length; i < il; i++) { 
+                        if (arr[i] === dice_val) { 
+                            return key; 
+                        }
+                    }
+                }
+            }
+
+            return null; 
+        }
+    }, 
+    dice_to_city = function(dice_val, region) { 
+        if (!region || !dice_val) { return ''; }
+        return regions[region][dice_val]; 
+    },
+    init_destination = function() { 
+        $destination = $('#destination'); 
+        $destination = $destination.kendoWindow(
+            {
+                "width" : "800px", 
+                "title" : "New Destination"
+            }
+        ); 
+
+		$.get('data/regions.json', function(data) { 
+			regions = data;
+			regions = sortObject(regions); 
+		}); 
+    },
     make_dest_selector = function($container) { 
         var li_template = kendo.template('<li data-value=#value#><span>#value</span></li>'),
             $region_ul = $('<ul></ul>'),
@@ -85,7 +133,6 @@ var $win = $(window),
         }; 
 
         set_region = function() { 
-
             parse_roll($('#regions'), function(dice_val, is_odd) { 
                 var region_val = dice_to_region(dice_val, is_odd); 
 
@@ -100,11 +147,12 @@ var $win = $(window),
             );
         }; 
         set_city = function() { 
-            parse_roll($('#city_panel'), function(dice_val, is_odd) { 
-                var city_val = dice_to_city(dice_val, is_odd); 
-                $('#city_greeting').text("You're going to "); 
-                $('#city').text(city_val); 
-            }); 
+            var dice_val = $city_div.find('.dice > li:selected'),
+                city_val = dice_to_city(dice_val, $region_ul.find('li:selected').val()), 
+                greeting = (city_val) ? 'You\'re going to ' : ""; 
+
+            $('#city_greeting').text("You're going to "); 
+            $('#city').text(city_val); 
         };
 
         $city_div.append($("<span id='city-greeting'></span><span id='city'></span>"));
@@ -127,12 +175,14 @@ var $win = $(window),
                         $region_ul.append(kendo.render(li_template, {"value" : key})); 
                     }
                 }
+                $odd_even_ul.change(set_region); 
+                $dice_ul.change(set_region); 
             } else {
                 $container.append($city_div);
+                $odd_even_ul.change(set_city); 
+                $dice_ul.change(set_city); 
             }
        }
-        $container.append($odd_even_ul); 
-        $container.append($dice_ul); 
     },
     key_handlers = {},
     register_key = function(character, handler_fn) { 
@@ -190,14 +240,6 @@ $doc.ready(function() {
 
     $(document).ready(function() { 
 		var regions, payoffs;
-		$.get('data/regions.json', function(data) { 
-			regions = data;
-			var $region_sel = $('#region'); 
-			regions = sortObject(regions); 
-			for (key in regions) { 
-				$region_sel.append($('<option>' + key + '</option>')); 
-			} 	
-		}); 
         $('#query').click(function(e) { 
 			var dice  = $('#dice').val(); 
 			var evenodd = $('#evenodd').find('option:selected').val();
