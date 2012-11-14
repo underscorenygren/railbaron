@@ -3,6 +3,7 @@
 var $win = $(window),
     $doc = $(document), 
     $payoff = null,
+    $destination = null,
     payoffs = null,
     regions = null,
     own_prop = function(elem, val) { 
@@ -208,6 +209,10 @@ var $win = $(window),
             $payoff.center();
             $payoff.open(); 
         }); 
+        register_key('n', function() { 
+            $destination.center(); 
+            $destination.open();
+        }); 
     },
     sortObject = function(o) {
 		var sorted = {},
@@ -234,6 +239,7 @@ $doc.ready(function() {
     adjust_viewport(); 
     init_payoff(); 
     init_keystrokes();
+    init_destination(); 
 }); 
 
 })(); 
