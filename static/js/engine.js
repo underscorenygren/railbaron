@@ -191,8 +191,11 @@ var $win = $(window),
                 $city_div.find('.autoupdate > li').bind('click',  set_city); 
             }
 
-       }
-       $container.find('li').bind('click', radio_selector); 
+        }   
+        $container.find('li').bind('click', function(evt) { 
+            radio_selector(evt); 
+            set_city(); 
+        });
     },
     key_handlers = {},
     register_key = function(character, handler_fn) { 
