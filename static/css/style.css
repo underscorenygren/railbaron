@@ -32,8 +32,12 @@ body {
 }
 
 #destination li { 
-    display: inline;
-    margin: auto 5px;
+    display: inline-block;
+    margin: 5px;
+}
+
+#destination ul.dice li { 
+    width: 56px;
 }
 
 #destination li.k-selected { 
