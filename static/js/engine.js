@@ -80,40 +80,6 @@ var $win = $(window),
         $from.change(update_payoff); 
         $to.change(update_payoff); 
     }, 
-    dice_to_region = (function() { 
-        var _regions = {
-            "Plains" : [-2, 8, 11],
-            "SouthEast" : [-3, -4, -5],
-            "NorthCentral" : [-6,-7], 
-            "NorthEast" : [-8,  -9, -10, -11, -12],
-            "SouthWest" : [2, 6, 7],
-            "SouthCentral" : [3, 4, 5],
-            "NorthWest" : [9, 10, 12]
-        }; 
-
-        return function(dice_val, is_odd) { 
-            var key; 
-            dice_val = parseInt(dice_val); 
-            if (is_odd) { dice_val = -dice_val; } 
-
-            for (key in _regions) { 
-                if (own_prop(_regions, key)) { 
-                    arr = _regions[key]; 
-                    for (i = 0, il = arr.length; i < il; i++) { 
-                        if (arr[i] === dice_val) { 
-                            return key; 
-                        }
-                    }
-                }
-            }
-
-            return null; 
-        }
-    })(), 
-    dice_to_city = function(dice_val, region) { 
-        if (!region || !dice_val) { return ''; }
-        return regions[region][dice_val]; 
-    },
     init_destination = function() { 
         $destination = $('#destination'); 
         $destination.kendoWindow(
