@@ -33,17 +33,23 @@ var $win = $(window),
     update_payoff = function() { 
         var from = $('#payoff-from').val(),
             to = $('#payoff-to').val(), 
-            pay;
+            pay, suffix = ',000';
 
         
         try {  
             pay = payoffs[to][from];
         } catch(err) {
-            pay = 0;
+            pay = '';
         }
-        pay = (pay) ? parseFloat(pay) : 0; 
-        pay = '$' + (pay * 1000); 
-        $('#payday').text(pay); 	
+        if (pay) {
+            if (pay.indexOf('.') !== -1) { 
+                pay = pay.replace('.', ','); 
+                suffix = '00'; 
+            }
+
+            pay = '$' + pay + suffix; 
+            $('#payday').text(pay); 	
+        }
     },
     adjust_close_button = function($kendo_win) { 
         var $ref = $kendo_win.parent().find('.k-window-actions'); 
