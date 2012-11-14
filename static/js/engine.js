@@ -148,20 +148,21 @@ var $win = $(window),
         parse_roll = function($panel, region, dice_val_fn) { 
             var is_odd = $panel.find("ul.odd-even > li.k-selected"),
                 dice_val = $panel.find("ul.dice > li.k-selected"), 
-                result; 
+                result = ''; 
             if (!is_odd || !dice_val) { return null; }
             is_odd = (is_odd.attr('data-value') === 'Odd');
             dice_val = dice_val.attr('data-value');
             dice_val = parseInt(dice_val); 
             if (is_odd) { dice_val = -dice_val; }
-            if (!region || !dice_val) { return ''; }
-            result = regions[region][dice_val]; 
+            if (region && dice_val) {
+                result = regions[region][dice_val]; 
+            }
             dice_val_fn(result); 
         };
 
         set_region = function() { 
             setTimeout(function() { 
-                parse_roll($('#regions'), 'Regions', function(region_val) { 
+                parse_roll($region_div, 'Regions', function(region_val) { 
                     $region_ul.find('li').each(function() { 
                         var $elem = $(this); 
                         if ($elem.text() === region_val) { 
@@ -176,26 +177,26 @@ var $win = $(window),
 
         set_city = function() { 
             setTimeout(function() { 
-                parse_roll($('#city_div'), $region_ul.find('li.k-selected').attr('data-value'), function(city_val) { 
-                var greeting = (city_val) ? 'You\'re going to ' : ""; 
-
-                $('#city_greeting').html("You're going to&nbsp;"); 
-                $('#city').text(city_val); 
+                parse_roll($city_div, $region_ul.find('li.k-selected').attr('data-value'), function(city_val) { 
+                    var greeting = (city_val) ? 'You\'re going to ' : ""; 
+                    if (!city_val) { return; }
+                    $('#city_greeting').html("You're going to&nbsp;"); 
+                    $('#city').text(city_val); 
+               }); 
            }, 50); 
         };
 
         for (one = 0; one < 2; one++) { 
             region_city = (!one) ? 'Region' : 'City'; 
-            $dice_ul = $('<ul class="dice"></ul>'); 
+            $dice_ul = $('<ul class="dice autoupdate"></ul>'); 
             $container.append($('<h2></h2>').text(region_city));
 
-            $odd_even_ul = $('<ul class="odd-even"></ul>');
+            $odd_even_ul = $('<ul class="odd-even autoupdate"></ul>');
             for (two = 0; two < 2; two++) {
                 odd_even = (!two) ? 'Odd' : 'Even';
                 $odd_even_ul.append($(kendo.render(li_template, [{"value" : odd_even}]))); 
             }
             $odd_even_ul.appendTo((region_city === 'Region') ? $region_div : $city_div); 
-            $odd_even_ul.find('li').bind('click', (region_city === 'Region') ? set_region : set_city);
 
             for (i = 2; i < 13; i++) { 
                 $dice_ul.append($(kendo.render(li_template, [{'value' : i}]))); 
@@ -217,6 +218,13 @@ var $win = $(window),
                 $container.append($city_div);
                 $dice_ul.find('li').bind('click', set_city); 
             }
+            
+            if (region_city === 'Region') { 
+                $region_div.find('.autoupdate > li').bind('click',  set_region); 
+            } else { 
+                $city_div.find('.autoupdate > li').bind('click',  set_city); 
+            }
+
        }
        $container.find('li').bind('click', radio_selector); 
     },
