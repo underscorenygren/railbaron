@@ -5,95 +5,41 @@
     google.load("jquery", "1.7"); 
     google.load("jqueryui", "1.8"); 
 </script>
+<link href='css/reset.css' type='text/css' rel='stylesheet'></link> 
+<link href='css/kendo/kendo.common.min.css' type='text/css' rel='stylesheet'></link>
+<link href='css/kendo/kendo.default.min.css' type='text/css' rel='stylesheet'></link>
+<link href='css/style.css' type='text/css' rel='stylesheet'></link>
+
+<script type="text/javascript" src='js/kendo/kendo.web.min.js'></script>
 </head>
 <body>
-
-<div>
-	<select id="region">
-	</select>
-	<select id="evenodd">
-		<option value="odd">Odd</option>
-		<option value="even">Even</option>
-	</select>
-	<input id="dice" type="text" />
-	<input id="query" type="button" value='GO' />
-	<span id="output"></span>
+<div id="container">
+     <div id="controls_container">
+        <div id="controls">
+            <span class='k-button first' id='destination_button'>New Destination</span>
+            <span class='k-button' id='payoff_button'>Payoff</span>
+        </div>
+    </div>
+    <div class='k-menu' id='destination' style='display:none'>
+    </div>
+    <div class='k-menu' id='payoff' style='display:none'>
+        <table>
+            <tr class='menu-row'>
+                <td><label for='payoff-from'>From: </label></td>
+                <td><input id='payoff-from' class='k-input'></input></td>
+            </tr>
+            <tr class='menu-row'>
+                <td><label for='payoff-to'>To: </label></td>
+                <td><input id='payoff-to' class='k-input'></input></td>
+            </tr>
+            <tr class='menu-row'>
+                <td><label>Payoff: </label></td>
+                <td><span id="payday"></span></td>
+            </tr>
+        </table>
+    </div>
+    <img id='bg' src='/img/railbaron_board.jpg' />
 </div>
-<div>
-	<span>From: </span>
-	<select id="from">
-	</select>
-	<span>To: </span>
-	<select id="to">
-	</select>
-	<input id="payoff" type="button" value='Pay Me!' />
-	<span id="payday"></span>
-</div>
-<script type="text/javascript">
-	function sortObject(o) {
-		var sorted = {},
-		key, a = [];
-
-		for (key in o) {
-			if (o.hasOwnProperty(key)) {
-					a.push(key);
-			}
-		}
-
-		a.sort();
-
-		for (key = 0; key < a.length; key++) {
-			sorted[a[key]] = o[a[key]];
-		}
-		return sorted;
-	}
-
-    $(document).ready(function() { 
-		var regions, payoffs;
-		$.get('./regions.json', function(data) { 
-			regions = JSON.parse(data);
-			var $region_sel = $('#region'); 
-			regions = sortObject(regions); 
-			for (key in regions) { 
-				$region_sel.append($('<option>' + key + '</option>')); 
-			} 	
-		}); 
-		$.get('./payoffs.json', function(data) { 
-			payoffs = JSON.parse(data);
-			payoffs = sortObject(payoffs); 
-			var $from = $('#from'); 
-			var $to = $('#to'); 
-			
-			for (key in payoffs) { 
-				var $opt = $('<option>' + key + '</option>'); 
-				$from.append($opt.clone()); 
-				$to.append($opt); 
-			}
-		}); 
-        $('#query').click(function(e) { 
-			var dice  = $('#dice').val(); 
-			var evenodd = $('#evenodd').find('option:selected').val();
-			var region = $('#region').find('option:selected').text(); 
-
-			if (evenodd === "odd") { 
-				dice = '-' + dice;
-			}
-
-			$('#output').text(regions[region][dice]); 
-				
-        }); 
-
-		$('#payoff').click(function(e) { 
-			var from = $('#from').val(); 
-			var to = $('#to').val(); 
-			
-			var pay = payoffs[to][from];
-			pay = parseFloat(pay); 
-			pay = '$' + (pay * 1000); 
-			$('#payday').text(pay); 	
-		}); 
-    }); 
-</script>
-
+<script type="text/javascript" src='js/engine.js'></script>
 </body>
 </html>
