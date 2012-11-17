@@ -1,0 +1,5 @@
+This repository is a project to digitize the Railbaron game from avalon hill. 
+
+Presently, the project has a Destination and a payout calculator. Logic is all client side with data retrieved from online repositories. Jquery and KendoUI is used to power the logic. 
+
+To run, launch the tornado server with your desired port using the --port argument. 
