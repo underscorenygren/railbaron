@@ -21,10 +21,17 @@ var $win = $(window),
     adjust_viewport = function() { 
         var h = $win.height(), 
             w = $win.width(), 
-            $bg = $('#bg'); 
+            bg_h, 
+            $bg = $('#bg'), 
+            margin_top = 0;
 
         //$bg.height(h); 
         $bg.width(w); 
+        bg_h = $bg.height(); 
+        if (bg_h && h > bg_h) { 
+            margin_top = (h - $bg.height()) / 2.0; 
+            $bg.css({'margin-top': margin_top}); 
+        }
         
     },
     show_new_dest = function() { 
